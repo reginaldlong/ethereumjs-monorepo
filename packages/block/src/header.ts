@@ -184,6 +184,11 @@ export class BlockHeader {
       throw new Error('invalid header. Less values than expected were received')
     }
 
+    if (opts.common?.isActivatedEIP(1559) && !baseFeePerGas) {
+      // TODO fixme
+      // throw new Error('invalid header. baseFeePerGas should be provided')
+    }
+
     return new BlockHeader(
       toBuffer(parentHash),
       toBuffer(uncleHash),
