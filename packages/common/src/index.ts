@@ -883,6 +883,23 @@ export default class Common extends EventEmitter {
   }
 
   /**
+   * Returns the hardfork change block for eip
+   * @param eip EIP number
+   * @returns Block number or null if unscheduled
+   */
+  eipBlockBN(eip: number): BN | null {
+    for (const hfChanges of HARDFORK_CHANGES) {
+      const hf = hfChanges[1]
+      if ('eips' in hf) {
+        if (hf['eips'].includes(eip)) {
+          return this.hardforkBlockBN(hf[0])
+        }
+      }
+    }
+    return null
+  }
+
+  /**
    * Returns the hardfork change total difficulty (Merge HF) for hardfork provided or set
    * @param hardfork Hardfork name, optional if HF set
    * @returns Total difficulty or null if no set
