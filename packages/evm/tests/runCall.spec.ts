@@ -14,15 +14,8 @@ function create2address(sourceAddress: Address, codeHash: Buffer, salt: Buffer):
   return new Address(Buffer.from(keccak256(hashBuffer)).slice(12))
 }
 
-/*
-    This test:
-        Setups a contract at address 0x00..ff 
-        Instantiates the VM at the Constantinople fork
-        Calls the address with various arguments (callvalue is used as argument). VMs `runCall` is used.
-        The CREATE2 address which the contract creates is checked against the expected CREATE2 value.
-*/
-
-tape.only('Create where FROM account nonce is 0', async (t) => {
+// Tests `runCall` with caller being unused (i.e non-existent) account
+tape('Create where FROM account nonce is 0', async (t) => {
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.Constantinople })
   const eei = await getEEI()
   const evm = await EVM.create({ common, eei })
@@ -34,6 +27,14 @@ tape.only('Create where FROM account nonce is 0', async (t) => {
   )
   t.end()
 })
+
+/*
+    This test:
+        Setups a contract at address 0x00..ff 
+        Instantiates the VM at the Constantinople fork
+        Calls the address with various arguments (callvalue is used as argument). VMs `runCall` is used.
+        The CREATE2 address which the contract creates is checked against the expected CREATE2 value.
+*/
 tape('Constantinople: EIP-1014 CREATE2 creates the right contract address', async (t) => {
   // setup the accounts for this test
   const caller = new Address(Buffer.from('00000000000000000000000000000000000000ee', 'hex')) // caller addres
