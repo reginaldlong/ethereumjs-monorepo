@@ -870,8 +870,7 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
       addr = generateAddress2(message.caller.buf, message.salt, message.code as Buffer)
     } else {
       const acc = await this.eei.getAccount(message.caller)
-      const newNonce = acc.nonce - BigInt(1)
-      addr = generateAddress(message.caller.buf, bigIntToBuffer(newNonce))
+      addr = generateAddress(message.caller.buf, bigIntToBuffer(acc.nonce))
     }
     return new Address(addr)
   }

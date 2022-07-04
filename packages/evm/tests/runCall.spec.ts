@@ -21,7 +21,7 @@ tape('Create where FROM account nonce is 0', async (t) => {
   const evm = await EVM.create({ common, eei })
   const res = await evm.runCall({ to: undefined })
   t.equals(
-    '0xbd770416a3345f91e4b34576cb804a576fa48eb1',
+    '0x5a443704dd4b594b382c22a083e2bd3090a6fef3',
     res.createdAddress?.toString(),
     'created valid address when FROM account nonce is 0'
   )
@@ -471,14 +471,15 @@ tape('Ensure that IDENTITY precompile copies the memory', async (t) => {
   }
 
   const result = await evm.runCall(runCallArgs)
-  const expectedAddress = Buffer.from('28373a29d17af317e669579d97e7dddc9da6e3e2', 'hex')
+  const expectedAddress = Buffer.from('3d255dd0b1531a71f6903a84cc49faaa237f2ba4', 'hex')
   const expectedCode = Buffer.from(
-    '00000000000000000000000028373a29d17af317e669579d97e7dddc9da6e3e2e7dddc9da6e3e200000000000000000000000000000000000000000000000000',
+    '0000000000000000000000003d255dd0b1531a71f6903a84cc49faaa237f2ba449faaa237f2ba400000000000000000000000000000000000000000000000000',
     'hex'
   )
 
   t.ok(result.createdAddress?.buf.equals(expectedAddress), 'created address correct')
   const deployedCode = await eei.getContractCode(result.createdAddress!)
+  console.log(result.createdAddress?.toString(), deployedCode.toString('hex'))
   t.ok(deployedCode.equals(expectedCode), 'deployed code correct')
 
   t.end()
