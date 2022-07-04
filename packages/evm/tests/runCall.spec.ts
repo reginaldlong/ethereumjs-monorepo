@@ -22,6 +22,18 @@ function create2address(sourceAddress: Address, codeHash: Buffer, salt: Buffer):
         The CREATE2 address which the contract creates is checked against the expected CREATE2 value.
 */
 
+tape.only('Create where FROM account nonce is 0', async (t) => {
+  const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.Constantinople })
+  const eei = await getEEI()
+  const evm = await EVM.create({ common, eei })
+  const res = await evm.runCall({ to: undefined })
+  t.equals(
+    '0xbd770416a3345f91e4b34576cb804a576fa48eb1',
+    res.createdAddress?.toString(),
+    'created valid address when FROM account nonce is 0'
+  )
+  t.end()
+})
 tape('Constantinople: EIP-1014 CREATE2 creates the right contract address', async (t) => {
   // setup the accounts for this test
   const caller = new Address(Buffer.from('00000000000000000000000000000000000000ee', 'hex')) // caller addres
