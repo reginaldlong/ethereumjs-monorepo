@@ -865,7 +865,7 @@ export default class Interpreter {
       return BigInt(0)
     }
 
-    this._env.contract.nonce += BigInt(1)
+    //this._env.contract.nonce += BigInt(1)
     await this._eei.putAccount(this._env.address, this._env.contract)
 
     if (this._common.isActivatedEIP(3860)) {

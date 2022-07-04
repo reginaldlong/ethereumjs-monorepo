@@ -471,10 +471,9 @@ tape('Ensure that IDENTITY precompile copies the memory', async (t) => {
   }
 
   const result = await evm.runCall(runCallArgs)
-
-  const expectedAddress = Buffer.from('8eae784e072e961f76948a785b62c9a950fb17ae', 'hex')
+  const expectedAddress = Buffer.from('28373a29d17af317e669579d97e7dddc9da6e3e2', 'hex')
   const expectedCode = Buffer.from(
-    '0000000000000000000000008eae784e072e961f76948a785b62c9a950fb17ae62c9a950fb17ae00000000000000000000000000000000000000000000000000',
+    '00000000000000000000000028373a29d17af317e669579d97e7dddc9da6e3e2e7dddc9da6e3e200000000000000000000000000000000000000000000000000',
     'hex'
   )
 

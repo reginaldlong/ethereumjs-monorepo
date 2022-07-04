@@ -377,6 +377,11 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
       }
     }
 
+    if (message.depth === 0) {
+      account.nonce += BigInt(1)
+      await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
+    }
+
     let result: ExecResult
     if (message.isCompiled) {
       if (this.DEBUG) {
@@ -406,6 +411,8 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
 
   protected async _executeCreate(message: Message): Promise<EVMResult> {
     const account = await this.eei.getAccount(message.caller)
+    account.nonce += BigInt(1)
+    await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
     // Reduce tx value from sender
     await this._reduceSenderBalance(account, message)
 
@@ -863,9 +870,7 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
       addr = generateAddress2(message.caller.buf, message.salt, message.code as Buffer)
     } else {
       const acc = await this.eei.getAccount(message.caller)
-      // Check message depth to determine if in a `runTx` execution context and need to subtract one from nonce
-      const newNonce =
-        message.depth > 0 && acc.nonce === BigInt(0) ? acc.nonce - BigInt(1) : acc.nonce
+      const newNonce = acc.nonce - BigInt(1)
       addr = generateAddress(message.caller.buf, bigIntToBuffer(newNonce))
     }
     return new Address(addr)

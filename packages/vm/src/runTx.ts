@@ -292,7 +292,7 @@ async function _runTx(this: VM, opts: RunTxOpts): Promise<RunTxResult> {
   }
 
   // Update from account's nonce and balance
-  fromAccount.nonce += BigInt(1)
+  //fromAccount.nonce += BigInt(1)
   const txCost = tx.gasLimit * gasPrice
   fromAccount.balance -= txCost
   if (opts.skipBalance && fromAccount.balance < BigInt(0)) {
