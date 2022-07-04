@@ -366,6 +366,10 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
         debug(`Exit early on value transfer overflowed`)
       }
     }
+    if (message.depth === 0) {
+      account.nonce += BigInt(1)
+      await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
+    }
     if (exit) {
       return {
         execResult: {
@@ -375,11 +379,6 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
           returnValue: Buffer.alloc(0),
         },
       }
-    }
-
-    if (message.depth === 0) {
-      account.nonce += BigInt(1)
-      await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
     }
 
     let result: ExecResult
@@ -411,8 +410,6 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
 
   protected async _executeCreate(message: Message): Promise<EVMResult> {
     const account = await this.eei.getAccount(message.caller)
-    account.nonce += BigInt(1)
-    await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
     // Reduce tx value from sender
     await this._reduceSenderBalance(account, message)
 
@@ -432,6 +429,10 @@ export default class EVM extends AsyncEventEmitter<EVMEvents> implements EVMInte
     message.code = message.data
     message.data = Buffer.alloc(0)
     message.to = await this._generateAddress(message)
+
+    account.nonce += BigInt(1)
+    await this.eei.putAccount(message.authcallOrigin ?? message.caller, account)
+
     if (this.DEBUG) {
       debug(`Generated CREATE contract address ${message.to}`)
     }
