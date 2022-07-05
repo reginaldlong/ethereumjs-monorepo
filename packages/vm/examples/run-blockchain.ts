@@ -12,7 +12,6 @@ import { Blockchain } from '@ethereumjs/blockchain'
 import { Common, ConsensusType } from '@ethereumjs/common'
 import { VM } from '../'
 import { testData } from './helpers/blockchain-mock-data'
-import { Level } from 'level'
 
 async function main() {
   const common = new Common({ chain: 1, hardfork: testData.network.toLowerCase() })
