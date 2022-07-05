@@ -27,12 +27,15 @@ This means that a Transaction object instantiated without providing an explicit 
 If you want to prevent these kind of implicit HF switches in the future it is likely a good practice to just always do your upper-level library instantiations with a `Common` instance setting an explicit HF, e.g.:
 
 ```typescript
-import Common, { Chain, Hardfork } from '@ethereumjs/common'
+import { Chain, Common, Hardfork } from '@ethereumjs/common'
 
 const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.Merge })
-const tx = Transaction.fromTxData({
-  // Provide your tx data here or use default values
-}, { common })
+const tx = Transaction.fromTxData(
+  {
+    // Provide your tx data here or use default values
+  },
+  { common }
+)
 ```
 
 ### BigInt Introduction / ES2020 Build Target
@@ -51,7 +54,7 @@ The above TypeScript options provide some semantic sugar like allowing to write 
 
 While this is convenient it deviates from the ESM specification and forces downstream users into these options which might not be desirable, see [this TypeScript Semver docs section](https://www.semver-ts.org/#module-interop) for some more detailed argumentation.
 
-Along the breaking releases we have therefore deactivated both of these options and you might therefore need to adopt some import statements accordingly. Note that you still have got the possibility to activate these options in your bundle and/or transpilation pipeline (but now you also have the option to *not* do which you didn't have before).
+Along the breaking releases we have therefore deactivated both of these options and you might therefore need to adopt some import statements accordingly. Note that you still have got the possibility to activate these options in your bundle and/or transpilation pipeline (but now you also have the option to _not_ do which you didn't have before).
 
 ### BigInt-Related API Changes
 
@@ -101,7 +104,7 @@ Note that this EIP is not part of a specific hardfork yet and is considered `EXP
 For now the EIP has to be activated manually which can be done by using a respective `Common` instance:
 
 ```typescript
-const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London, eips: [ 3860 ] })
+const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London, eips: [3860] })
 ```
 
 ## 3.5.0 - 2022-02-01
@@ -126,7 +129,7 @@ An ArrowGlacier transaction can be instantiated with:
 
 ```typescript
 import { Transaction } from '@ethereumjs/tx'
-import Common, { Chain, Hardfork } from '@ethereumjs/common'
+import { Chain, Common, Hardfork } from '@ethereumjs/common'
 
 const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.ArrowGlacier })
 const tx = Transaction.fromTxData({}, { common })
@@ -151,7 +154,6 @@ Invalid Signature: s-values greater than secp256k1n/2 are considered invalid (tx
 The extended errors give substantial more object and chain context and should ease debugging.
 
 **Potentially breaking**: Attention! If you do react on errors in your code and do exact errror matching (`error.message === 'invalid transaction trie'`) things will break. Please make sure to do error comparisons with something like `error.message.includes('invalid transaction trie')` instead. This should generally be the pattern used for all error message comparisions and is assured to be future proof on all error messages (we won't change the core text in non-breaking releases).
-
 
 ## Other Changes
 
@@ -182,7 +184,7 @@ This tx release bumps the `Common` library dependency version to `v2.4.0` and is
 
 ```typescript
 import { Transaction } from '@ethereumjs/tx'
-import Common from '@ethereumjs/common'
+import { Common } from '@ethereumjs/common'
 
 const from = 'PUBLIC_KEY'
 const PRIV_KEY = process.argv[2]
@@ -265,25 +267,24 @@ We tried to get more intelligent on the instantiation with a default chain if no
 
 Both these changes with the new default HF rules and the more intelligent chain ID instantiation now allows for an e.g. `EIP-155` tx instantiation without a Common (and generally for a safer non-Common tx instantiation) like this:
 
-
 ```typescript
-import Common from '@ethereumjs/common'
+import { Common } from '@ethereumjs/common'
 import { FeeMarketEIP1559Transaction } from '@ethereumjs/tx'
 
 const txData = {
-  "data": "0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  "gasLimit": "0x02625a00",
-  "maxPriorityFeePerGas": "0x01",
-  "maxFeePerGas": "0xff",
-  "nonce": "0x00",
-  "to": "0xcccccccccccccccccccccccccccccccccccccccc",
-  "value": "0x0186a0",
-  "v": "0x01",
-  "r": "0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9",
-  "s": "0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64",
-  "chainId": "0x01",
-  "accessList": [],
-  "type": "0x02"
+  data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  gasLimit: '0x02625a00',
+  maxPriorityFeePerGas: '0x01',
+  maxFeePerGas: '0xff',
+  nonce: '0x00',
+  to: '0xcccccccccccccccccccccccccccccccccccccccc',
+  value: '0x0186a0',
+  v: '0x01',
+  r: '0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9',
+  s: '0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64',
+  chainId: '0x01',
+  accessList: [],
+  type: '0x02',
 }
 
 const tx = FeeMarketEIP1559Transaction.fromTxData(txData)
@@ -297,10 +298,10 @@ This is just a note on documentation. There has been some confusion around how t
 
 ```typescript
 import { rlp } from 'ethereumjs-util'
-import Common from '@ethereumjs/common'
+import { Common } from '@ethereumjs/common'
 import { Transaction } from '@ethereumjs/tx'
 
-const common = new Common({ chain: 'goerli', hardfork: 'berlin'})
+const common = new Common({ chain: 'goerli', hardfork: 'berlin' })
 const tx = Transaction.fromTxData({}, { common })
 
 const message = tx.getMessageToSign(false)
@@ -325,25 +326,25 @@ An `EIP-1559` tx inherits the access list feature from the `AccessListEIP2930Tra
 An `EIP-1559` tx can be instantiated with:
 
 ```typescript
-import Common from '@ethereumjs/common'
+import { Common } from '@ethereumjs/common'
 import { FeeMarketEIP1559Transaction } from '@ethereumjs/tx'
 
 const common = new Common({ chain: 'mainnet', hardfork: 'london' })
 
 const txData = {
-  "data": "0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  "gasLimit": "0x02625a00",
-  "maxPriorityFeePerGas": "0x01",
-  "maxFeePerGas": "0xff",
-  "nonce": "0x00",
-  "to": "0xcccccccccccccccccccccccccccccccccccccccc",
-  "value": "0x0186a0",
-  "v": "0x01",
-  "r": "0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9",
-  "s": "0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64",
-  "chainId": "0x01",
-  "accessList": [],
-  "type": "0x02"
+  data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  gasLimit: '0x02625a00',
+  maxPriorityFeePerGas: '0x01',
+  maxFeePerGas: '0xff',
+  nonce: '0x00',
+  to: '0xcccccccccccccccccccccccccccccccccccccccc',
+  value: '0x0186a0',
+  v: '0x01',
+  r: '0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9',
+  s: '0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64',
+  chainId: '0x01',
+  accessList: [],
+  type: '0x02',
 }
 
 const tx = FeeMarketEIP1559Transaction.fromTxData(txData, { common })
@@ -373,7 +374,7 @@ This release fixes a critical EIP-2930 tx constructor bug which slipped through 
 - Added alias `type` for `transactionType` so it can be interpreted correctly for an `AccessListEIP2930Transaction` instantiation when passed to `fromTxData()`, PR [#1185](https://github.com/ethereumjs/ethereumjs-monorepo/pull/1185)
 - `TransactionFactory.fromTxData()`: fixed a bug where instantiation was breaking when `type` was passed in as a 0x-prefixed hex string, PR [#1185](https://github.com/ethereumjs/ethereumjs-monorepo/pull/1185)
 - `AccessListEIP2930Transaction`: added a test that initializes correctly from its own data (adds coverage for `type` property alias), PR [#1185](https://github.com/ethereumjs/ethereumjs-monorepo/pull/1185)
-- EIP-2930 aliases for `senderS`, `senderR`, `yParity` are now marked as *deprecated*, use `v`, `r`, `s` instead
+- EIP-2930 aliases for `senderS`, `senderR`, `yParity` are now marked as _deprecated_, use `v`, `r`, `s` instead
 
 ## 3.1.2 - 2021-03-31
 
@@ -400,32 +401,32 @@ This release comes with full support for the `berlin` hardfork by updating the l
 `EIP-2930` transactions can be instantiated with:
 
 ```typescript
-import Common from '@ethereumjs/common'
+import { Common } from '@ethereumjs/common'
 import { AccessListEIP2930Transaction } from '@ethereumjs/tx'
 
 const common = new Common({ chain: 'mainnet', hardfork: 'berlin' })
 
 const txData = {
-  "data": "0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-  "gasLimit": "0x02625a00",
-  "gasPrice": "0x01",
-  "nonce": "0x00",
-  "to": "0xcccccccccccccccccccccccccccccccccccccccc",
-  "value": "0x0186a0",
-  "v": "0x01",
-  "r": "0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9",
-  "s": "0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64",
-  "chainId": "0x01",
-  "accessList": [
+  data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  gasLimit: '0x02625a00',
+  gasPrice: '0x01',
+  nonce: '0x00',
+  to: '0xcccccccccccccccccccccccccccccccccccccccc',
+  value: '0x0186a0',
+  v: '0x01',
+  r: '0xafb6e247b1c490e284053c87ab5f6b59e219d51f743f7a4d83e400782bc7e4b9',
+  s: '0x479a268e0e0acd4de3f1e28e4fac2a6b32a4195e8dfa9d19147abe8807aa6f64',
+  chainId: '0x01',
+  accessList: [
     {
-      "address": "0x0000000000000000000000000000000000000101",
-      "storageKeys": [
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "0x00000000000000000000000000000000000000000000000000000000000060a7"
-      ]
-    }
+      address: '0x0000000000000000000000000000000000000101',
+      storageKeys: [
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+        '0x00000000000000000000000000000000000000000000000000000000000060a7',
+      ],
+    },
   ],
-  "type": "0x01"
+  type: '0x01',
 }
 
 const tx = AccessListEIP2930Transaction.fromTxData(txData, { common })

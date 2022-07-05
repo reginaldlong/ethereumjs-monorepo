@@ -34,7 +34,7 @@ The above TypeScript options provide some semantic sugar like allowing to write 
 
 While this is convenient, it deviates from the ESM specification and forces downstream users into using these options, which might not be desirable, see [this TypeScript Semver docs section](https://www.semver-ts.org/#module-interop) for some more detailed argumentation.
 
-Along with the breaking releases we have therefore deactivated both of these options and you might therefore need to adapt some import statements accordingly. Note that you still can activate these options in your bundle and/or transpilation pipeline (but now you also have the option *not* to, which you didn't have before).
+Along with the breaking releases we have therefore deactivated both of these options and you might therefore need to adapt some import statements accordingly. Note that you still can activate these options in your bundle and/or transpilation pipeline (but now you also have the option _not_ to, which you didn't have before).
 
 ### BigInt-Related and other API Changes
 
@@ -115,8 +115,8 @@ Please note that for backwards-compatibility reasons the associated Common is st
 An ArrowGlacier blockchain object can be instantiated with:
 
 ```typescript
-import Blockchain from '@ethereumjs/blockchain'
-import Common, { Chain, Hardfork } from '@ethereumjs/common'
+import { Blockchain } from '@ethereumjs/blockchain'
+import { Chain, Common, Hardfork } from '@ethereumjs/common'
 
 const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.ArrowGlacier })
 const blockchain = await Blockchain.create({ common })
@@ -170,8 +170,8 @@ This release comes with full functional `london` HF support (all EIPs are finali
 Please note that the default HF is still set to `istanbul`. You therefore need to explicitly set the `hardfork` parameter for instantiating a `Blockchain` instance with a `london` HF activated:
 
 ```typescript
-import Blockchain from '@ethereumjs/blockchain'
-import Common from '@ethereumjs/common'
+import { Blockchain } from '@ethereumjs/blockchain'
+import { Common } from '@ethereumjs/common'
 const common = new Common({ chain: 'mainnet', hardfork: 'london' })
 const blockchain = await Blockchain.create({ common })
 ```
@@ -193,8 +193,8 @@ This release comes with full `berlin` HF support by setting the `Block`, `Tx` an
 Please note that the default HF is still set to `istanbul`. You therefore need to explicitly set the `hardfork` parameter for instantiating a `Blockchain` instance with a `berlin` HF activated:
 
 ```typescript
-import Blockchain from '@ethereumjs/blockchain'
-import Common from '@ethereumjs/common'
+import { Blockchain } from '@ethereumjs/blockchain'
+import { Common } from '@ethereumjs/common'
 const common = new Common({ chain: 'mainnet', hardfork: 'berlin' })
 const blockchain = await Blockchain.create({ common })
 ```
@@ -266,7 +266,7 @@ See `Blockchain` [README](https://github.com/ethereumjs/ethereumjs-monorepo/tree
 The library now has an additional safe static constructor `Blockchain.create()` which awaits the init method and throws if the init method throws:
 
 ```typescript
-import Blockchain from '@ethereumjs/blockchain'
+import { Blockchain } from '@ethereumjs/blockchain'
 const common = new Common({ chain: 'ropsten' })
 const blockchain = await Blockchain.create({ common })
 ```
@@ -279,7 +279,7 @@ Constructor options (both for the static and the main constructor) for chain set
 
 Genesis handling has been reworked to now be safer and reduce the risk of wiping a blockchain by setting a new genesis, see PR [#930](https://github.com/ethereumjs/ethereumjs-monorepo/pull/930).
 
-**Breaking**: The dedicated `setGenesisBlock()` methods and the optional `isGenesis` option on `Blockchain.putBlock()` have been removed. Instead the genesis block is created on initialization either from the `Common` library instance passed or a custom genesis block passed along with the `genesisBlock` option. If a custom genesis block is used, this custom block now always has to be passed along on `Blockchain` initialization, also when operating on an already existing DB. 
+**Breaking**: The dedicated `setGenesisBlock()` methods and the optional `isGenesis` option on `Blockchain.putBlock()` have been removed. Instead the genesis block is created on initialization either from the `Common` library instance passed or a custom genesis block passed along with the `genesisBlock` option. If a custom genesis block is used, this custom block now always has to be passed along on `Blockchain` initialization, also when operating on an already existing DB.
 
 ### Removed deprecated `validate` option
 
@@ -342,7 +342,7 @@ This is the new recommended way to instantiate a `Blockchain` object, see PR [#9
 
 Genesis handling has been reworked to now be safer and reduce the risk of wiping a blockchain by setting a new genesis, see PR [#930](https://github.com/ethereumjs/ethereumjs-monorepo/pull/930).
 
-**Breaking**: The dedicated `setGenesisBlock()` methods and the optional `isGenesis` option on `Blockchain.putBlock()` have been removed. Instead the genesis block is created on initialization either from the `Common` library instance passed or a custom genesis block passed along with the `genesisBlock` option. If a custom genesis block is used, this custom block now always has to be passed along on `Blockchain` initialization, also when operating on an already existing DB. 
+**Breaking**: The dedicated `setGenesisBlock()` methods and the optional `isGenesis` option on `Blockchain.putBlock()` have been removed. Instead the genesis block is created on initialization either from the `Common` library instance passed or a custom genesis block passed along with the `genesisBlock` option. If a custom genesis block is used, this custom block now always has to be passed along on `Blockchain` initialization, also when operating on an already existing DB.
 
 **Changes and Refactoring**
 
@@ -401,7 +401,7 @@ Constructor options for chain setup on all VM monorepo libraries have been simpl
 Example:
 
 ```typescript
-import Blockchain from '@ethereumjs/blockchain'
+import { Blockchain } from '@ethereumjs/blockchain'
 const common = new Common({ chain: 'ropsten', hardfork: 'byzantium' })
 const blockchain = new Blockchain({ common })
 ```
@@ -412,8 +412,8 @@ The deprecated `validate` option has been removed, please use `valdiateBlock` an
 
 ### Dual ES5 and ES2017 Builds
 
-We significantly updated our internal tool and CI setup along the work on 
-PR [#913](https://github.com/ethereumjs/ethereumjs-monorepo/pull/913) with an update to `ESLint` from `TSLint` 
+We significantly updated our internal tool and CI setup along the work on
+PR [#913](https://github.com/ethereumjs/ethereumjs-monorepo/pull/913) with an update to `ESLint` from `TSLint`
 for code linting and formatting and the introduction of a new build setup.
 
 Packages now target `ES2017` for Node.js builds (the `main` entrypoint from `package.json`) and introduce

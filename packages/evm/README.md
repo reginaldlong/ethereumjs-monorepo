@@ -16,19 +16,18 @@
 # USAGE
 
 ```typescript
-import Common, { Chain, Hardfork } from '@ethereumjs/common'
-import EVM from '@ethereumjs/evm'
+import { Chain, Common, Hardfork } from '@ethereumjs/common'
+import { EVM } from '@ethereumjs/evm'
 
 const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
 const blockchain = new Blockchain({ common })
 const stateManager = new DefaultStateManager({ common })
 const eei = EEI(stateManager, common, blockchain)
 const evm = new EVM({
-        common,
-        blockchain,
-        eei,
-      });
-
+  common,
+  blockchain,
+  eei,
+})
 
 const STOP = '00'
 const ADD = '01'
@@ -91,8 +90,8 @@ Starting with `v5.1.0` the VM supports running both `Ethash/PoW` and `Clique/PoA
 The following is a simple example for a block run on `Goerli`:
 
 ```typescript
-import VM from '@ethereumjs/vm'
-import Common, { Chain } from '@ethereumjs/common'
+import { VM } from '@ethereumjs/vm'
+import { Chain, Common } from '@ethereumjs/common'
 
 const common = new Common({ chain: Chain.Goerli })
 const hardforkByBlockNumber = true
@@ -128,8 +127,8 @@ A specific hardfork VM ruleset can be activated by passing in the hardfork
 along the `Common` instance:
 
 ```typescript
-import Common, { Chain, Hardfork } from '@ethereumjs/common'
-import VM from '@ethereumjs/vm'
+import { Chain, Common, Hardfork } from '@ethereumjs/common'
+import { VM } from '@ethereumjs/vm'
 
 const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.Berlin })
 const vm = new VM({ common })
@@ -141,8 +140,8 @@ If you want to create a new instance of the VM and add your own genesis state, y
 instance with [custom genesis state](../common/README.md#initialize-using-customchains-array) and passing the flag `activateGenesisState` in `VMOpts`, e.g.:
 
 ```typescript
-import Common from '@ethereumjs/common'
-import VM from '@ethereumjs/vm'
+import { Common } from '@ethereumjs/common'
+import { VM } from '@ethereumjs/vm'
 import myCustomChain1 from '[PATH_TO_MY_CHAINS]/myCustomChain1.json'
 import chain1GenesisState from '[PATH_TO_GENESIS_STATES]/chain1GenesisState.json'
 
@@ -161,8 +160,8 @@ It is possible to individually activate EIP support in the VM by instantiate the
 with the respective EIPs, e.g.:
 
 ```typescript
-import Common, { Chain } from '@ethereumjs/common'
-import VM from '@ethereumjs/vm'
+import { Chain, Common } from '@ethereumjs/common'
+import { VM } from '@ethereumjs/vm'
 
 const common = new Common({ chain: Chain.Mainnet, eips: [2537] })
 const vm = new VM({ common })
