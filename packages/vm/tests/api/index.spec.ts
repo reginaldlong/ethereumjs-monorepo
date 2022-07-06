@@ -14,6 +14,9 @@ import * as testnetMerge from './testdata/testnetMerge.json'
 // needed for karma-typescript bundling
 import * as util from 'util' // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Buffer } from 'buffer' // eslint-disable-line @typescript-eslint/no-unused-vars
+import EVM from '@ethereumjs/evm'
+import EEI from '../../src/eei/eei'
+import { VMOpts } from '../../src'
 
 /**
  * Tests for the main constructor API and
@@ -194,6 +197,65 @@ tape('VM -> hardforkByBlockNumber, hardforkByTD, state (deprecated), blockchain'
     st.equal(copiedVM._common.hardfork(), 'byzantium')
 
     st.end()
+  })
+
+  t.test('should pass the correct VM options when copying the VM', async (st) => {
+    let opts: VMOpts = {
+      hardforkByBlockNumber: true,
+    }
+
+    let vm = await VM.create(opts)
+    let vmCopy = await vm.copy()
+    st.deepEqual(
+      (vmCopy as any)._hardforkByBlockNumber,
+      true,
+      'copy() correctly passes hardforkByBlockNumber option'
+    )
+    st.deepEqual(
+      (vm as any)._hardforkByBlockNumber,
+      (vmCopy as any)._hardforkByBlockNumber,
+      'hardforkByBlockNumber options match'
+    )
+
+    //
+
+    opts = {
+      hardforkByTD: BigInt(5001),
+    }
+    vm = await VM.create(opts)
+    vmCopy = await vm.copy()
+    st.deepEqual(
+      (vmCopy as any)._hardforkByTD,
+      BigInt(5001),
+      'copy() correctly passes hardforkByTD option'
+    )
+    st.deepEqual(
+      (vm as any)._hardforkByBlockNumber,
+      (vmCopy as any)._hardforkByBlockNumber,
+      'hardforkByTD options match'
+    )
+
+    //
+
+    opts = {
+      evm: await EVM.create({
+        allowUnlimitedContractSize: true,
+        eei: EEI.prototype,
+      }),
+    }
+
+    vm = await VM.create(opts)
+    vmCopy = await vm.copy()
+    st.deepEqual(
+      (vmCopy.evm as any)._allowUnlimitedContractSize,
+      true,
+      'copy() passes true allowUnlimitedContractSize option'
+    )
+    st.deepEqual(
+      (vm.evm as any)._allowUnlimitedContractSize,
+      (vmCopy.evm as any)._allowUnlimitedContractSize,
+      'allowUnlimitedContractSize options match'
+    )
   })
 
   tape('Ensure that precompile activation creates non-empty accounts', async (t) => {
